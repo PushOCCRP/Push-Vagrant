@@ -17,7 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Use Chef Solo to provision our virtual machine
   config.vm.provision :chef_solo do |chef|
-    chef.cookbooks_path = ["cookbooks", "site-cookbooks"]
+    chef.cookbooks_path = ["cookbooks"]
 
     chef.add_recipe "apt"
     chef.add_recipe "nodejs"
@@ -48,5 +48,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       }
     }
   end
+  
+  config.push.define "heroku" do |push|
+    push.app = "push-backend"
+  end
+
+  config.vm.provision "shell", run: "always", privileged: false, inline: <<-SHELL
+    echo "export occrp_joomla_url='https://www.occrp.org/index.html?option=com_push&format=json&view=articles'"
+  SHELL
+
 end
+
 
